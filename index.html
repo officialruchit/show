@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+  </head>
+  <body ng-controller="cc">
+    <table ng-repeat="i in list | filter:search">
+        Search Product: <input type="text" class="form-control w-25 mb-5" ng-model="search">
+      <tr>
+        <th>name</th>
+        <th>name</th>
+        <th>name</th>
+        <th>name</th>
+        <th>name</th>
+        <th>name</th>
+      </tr>
+      <tr>
+        <td>{{i.name}}</td>
+        <td>{{i.brand}}</td>
+        <td>{{i.image}}</td>
+        <td>{{price}}</td>
+        <td>{{qua}}</td>
+        <td>{{storage}}</td>
+        <td>
+          <input
+            type="button"
+            value="Show More"
+            ng-click="displayData(i)"
+            class="btn btn-primary"
+          />
+        </td>
+        <td>
+          <input type="button" value="delete" ng-click="del(i)" />
+        </td>
+      </tr>
+    </table>
+
+    <script>
+      const app = angular.module("app", []);
+      app.controller("cc", ($scope, $http) => {
+        $scope.list = [];
+        $scope.price = 0;
+        $scope.qua = "";
+        $scope.storage = 0;
+
+        $scope.getdata = function () {
+          $http.get("http://localhost:4444/data").then((res) => {
+            console.log(res.data);
+            $scope.list = res.data;
+          });
+        };
+        $scope.displayData = (item) => {
+          console.log(item);
+          $scope.quq = item.quanity;
+          $scope.price = item.price;
+          $scope.storage = item.storage;
+        };
+        $scope.del = (item) => {
+          $http
+            .delete(`http://localhost:4444/data/${item._id}`)
+            .then(function (response) {
+              $scope.list = response.data;
+              console.log(response.data);
+              $scope.getdata();
+            });
+        };
+        $scope.del = (i) => {
+          $http.delete(`http://localhost:4444/data/${i._id}`).then((res) => {
+            $scope.list = res.data;
+            $scope.getdata();
+          });
+        };
+
+        $scope.getdata();
+      });
+    </script>
+  </body>
+</html>
